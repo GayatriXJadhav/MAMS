@@ -12,15 +12,19 @@ app.use(cors(
 }
 ));
 app.use(express.json());
-app.use(bodyParser.json());
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
+
   app.post('/api/users', async (req, res) => {
-  const User = require('./model/user');
-  const user = new User(req.body);
-  await user.save();
-  res.json(user);
+  try {
+    const User = require('./model/user');
+    const user = new User(req.body);
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 const purchaseRoutes = require('./routes/purchases');
